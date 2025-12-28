@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>iTweak - Nugget & Misaka26 Compatibility</title>
+    <style>
+        :root {
+            --bg: #0b0b0e;
+            --card: #1c1c1e;
+            --accent: #0a84ff;
+            --text: #ffffff;
+            --secondary: #8e8e93;
+            --danger: #ff453a;
+            --success: #32d74b;
+        }
+        body { font-family: -apple-system, BlinkMacSystemFont, sans-serif; background: var(--bg); color: var(--text); padding: 20px; line-height: 1.6; }
+        .container { max-width: 900px; margin: 0 auto; }
+        .header { text-align: center; margin-bottom: 30px; }
+        .version-box { background: var(--card); padding: 25px; border-radius: 16px; border: 1px solid #333; margin-bottom: 25px; box-shadow: 0 4px 20px rgba(0,0,0,0.5); }
+        .feature-section { display: none; margin-bottom: 30px; animation: fadeIn 0.4s ease; }
+        .feature-section.active { display: block; }
+        h2 { color: var(--accent); border-bottom: 1px solid #333; padding-bottom: 8px; font-size: 1.4em; }
+        h3 { margin-top: 15px; font-size: 1em; color: var(--secondary); text-transform: uppercase; letter-spacing: 1px; }
+        .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 15px; margin-top: 10px; }
+        .item { background: #2c2c2e; padding: 12px 15px; border-radius: 10px; font-size: 0.95em; border-left: 3px solid var(--accent); }
+        .item.risky { border-left-color: var(--danger); }
+        .item.new { border-left-color: var(--success); }
+        select { padding: 12px; border-radius: 10px; border: 1px solid #444; background: #2c2c2e; color: #fff; width: 100%; font-size: 1em; margin-top: 10px; cursor: pointer; }
+        .badge { display: inline-block; padding: 4px 12px; border-radius: 20px; background: #3a3a3c; font-size: 0.8em; margin-bottom: 10px; color: var(--accent); border: 1px solid var(--accent); }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <div class="header">
+        <h1>iTweak</h1>
+        <p id="status">Detecting system version...</p>
+    </div>
+
+    <div class="version-box">
+        <label>System Version (Nugget & Misaka26):</label>
+        <select id="v-select" onchange="updateUI()">
+            <option value="detect">Auto-Detect Device</option>
+            <option value="16.0">iOS 16.0 - 16.7</option>
+            <option value="17.0">iOS 17.0 - 17.6</option>
+            <option value="18.0">iOS 18.0 - 18.0.1</option>
+            <option value="18.1">iOS 18.1 - 18.1.1 (AI Support)</option>
+            <option value="26.1">iOS 26.0 - 26.1</option>
+            <option value="26.2">iOS 26.2 Beta 1</option>
+        </select>
+    </div>
+
+    <div id="features">
+        <div class="feature-section" data-min="16.0" data-max="26.2">
+            <div class="badge">Universal (Misaka26 / Nugget)</div>
+            <h2>Core Customizations</h2>
+            <div class="grid">
+                <div class="item">Dynamic Island (iOS 16.0+)</div>
+                <div class="item">Stage Manager (iOS 16.0+)</div>
+                <div class="item">Shutter Sound Toggle</div>
+                <div class="item">Developer Mode & Metal HUD</div>
+                <div class="item">iPad Apps Support (on iPhone)</div>
+                <div class="item">Landscape FaceID (iOS 17.0+)</div>
+                <div class="item">Internal Storage Info (iOS 17.0+)</div>
+            </div>
+        </div>
+
+        <div class="feature-section" data-min="18.0" data-max="26.2">
+            <h2>iOS 18.0+ Features</h2>
+            <div class="grid">
+                <div class="item new">TrollPad (MultiTasking) *Requires macOS</div>
+                <div class="item">Always-on Display (AoD)</div>
+                <div class="item">AoD Vibrancy</div>
+                <div class="item">Apple Pencil Options</div>
+                <div class="item">Old Photos UI Toggle</div>
+                <div class="item">TapToWake (iPhone SE 2/3)</div>
+                <div class="item">CameraControl (18.0+)</div>
+                <div class="item">Sleep Apnea Detection</div>
+            </div>
+        </div>
+
+        <div class="feature-section" data-min="18.1" data-max="26.2">
+            <h2>Intelligence & Spoofing</h2>
+            <div class="grid">
+                <div class="item success" style="border-left-color: var(--success)">Apple Intelligence (All Devices)</div>
+                <div class="item">Device Model Spoofing</div>
+                <div class="item">AI Enabler Assets</div>
+            </div>
+        </div>
+
+        <div class="feature-section" data-min="26.0" data-max="26.2">
+            <div class="badge">Next-Gen Exclusive</div>
+            <h2>iOS 26.0 - 26.2 Beta</h2>
+            <div class="grid">
+                <div class="item new">Enable PWM (Flicker Control)</div>
+                <div class="item new">Security Research Device (SRD) Mode</div>
+                <div class="item new">M-Chip Game Support (Install RE4, etc.)</div>
+                <div class="item risky">Disable Liquid Glass</div>
+                <div class="item">Ignore Liquid Glass App Build Check</div>
+            </div>
+        </div>
+
+        <div class="feature-section" data-min="17.0" data-max="26.2">
+            <h3>Status Bar & UI (Nugget)</h3>
+            <div class="grid">
+                <div class="item">Change Carrier/Secondary Name</div>
+                <div class="item">Numeric WiFi/Cellular Strength</div>
+                <div class="item">Change Battery Capacity/Detail</div>
+                <div class="item">Custom Breadcrumb/Time Text</div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+function getVersion() {
+    const ua = window.navigator.userAgent;
+    if (/iPad|iPhone|iPod/.test(ua)) {
+        const matches = ua.match(/OS (\d+)_(\d+)_?(\d+)?/);
+        if (matches) return parseFloat(`${matches[1]}.${matches[2]}`);
+    }
+    return null;
+}
+
+function updateUI() {
+    let sel = document.getElementById('v-select').value;
+    let ver = (sel === "detect") ? (getVersion() || 0) : parseFloat(sel);
+    
+    document.getElementById('status').innerText = (sel === "detect" && ver === 0) 
+        ? "Device not detected. Please select manually." 
+        : "Viewing compatibility for iOS " + ver;
+
+    document.querySelectorAll('.feature-section').forEach(s => {
+        let min = parseFloat(s.dataset.min);
+        let max = parseFloat(s.dataset.max);
+        s.classList.toggle('active', ver >= min && ver <= max);
+    });
+}
+
+window.onload = updateUI;
+</script>
+
+</body>
+</html>
