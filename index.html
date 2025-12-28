@@ -3,121 +3,111 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Nugget vs Misaka26 Compatibility</title>
+    <title>Nugget & Misaka26 Thought Partner</title>
     <style>
         :root {
-            --bg: #0b0b0e;
-            --card: #1c1c1e;
-            --nugget: #0a84ff; /* Blue */
-            --misaka: #af52de; /* Purple */
-            --both: #32d74b;   /* Green */
-            --text: #ffffff;
-            --secondary: #8e8e93;
-            --danger: #ff453a;
+            --bg: #0b0b0e; --card: #1c1c1e; --nugget: #0a84ff; --misaka: #af52de;
+            --both: #32d74b; --text: #ffffff; --secondary: #8e8e93; --danger: #ff453a;
         }
         body { font-family: -apple-system, sans-serif; background: var(--bg); color: var(--text); padding: 20px; line-height: 1.6; }
         .container { max-width: 900px; margin: 0 auto; }
-        .legend { display: flex; gap: 15px; justify-content: center; margin-bottom: 20px; font-size: 0.85em; flex-wrap: wrap; }
-        .legend-item { display: flex; align-items: center; gap: 5px; }
-        .dot { width: 12px; height: 12px; border-radius: 50%; }
-        .version-box { background: var(--card); padding: 25px; border-radius: 16px; border: 1px solid #333; margin-bottom: 25px; }
+        .version-box { background: var(--card); padding: 20px; border-radius: 16px; border: 1px solid #333; margin-bottom: 25px; text-align: center; }
         .feature-section { display: none; margin-bottom: 30px; animation: fadeIn 0.4s ease; }
         .feature-section.active { display: block; }
-        h2 { border-bottom: 1px solid #333; padding-bottom: 8px; font-size: 1.4em; }
-        .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 12px; }
-        .item { background: #2c2c2e; padding: 12px; border-radius: 10px; font-size: 0.9em; border-left: 4px solid #444; position: relative; }
+        .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); gap: 12px; }
+        .item { 
+            background: #2c2c2e; padding: 15px; border-radius: 12px; font-size: 0.9em; 
+            border-left: 5px solid #444; cursor: pointer; transition: transform 0.2s; 
+        }
+        .item:hover { transform: scale(1.02); background: #3a3a3c; }
         .item.nugget { border-left-color: var(--nugget); }
         .item.misaka { border-left-color: var(--misaka); }
         .item.both { border-left-color: var(--both); }
-        .source-tag { position: absolute; top: 12px; right: 12px; font-size: 0.7em; font-weight: bold; opacity: 0.7; }
-        select { padding: 12px; border-radius: 10px; border: 1px solid #444; background: #2c2c2e; color: #fff; width: 100%; cursor: pointer; }
-        .warning-banner { background: rgba(255, 69, 58, 0.1); border: 1px solid var(--danger); color: var(--danger); padding: 15px; border-radius: 10px; margin-bottom: 20px; text-align: center; display: none; }
-        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+        
+        /* Modal Style */
+        .modal { display: none; position: fixed; z-index: 100; left: 0; top: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); backdrop-filter: blur(5px); }
+        .modal-content { background: var(--card); margin: 15% auto; padding: 30px; border-radius: 20px; max-width: 500px; border: 1px solid #444; }
+        .close { float: right; cursor: pointer; color: var(--secondary); font-size: 24px; }
+        
+        button { background: var(--nugget); color: white; border: none; padding: 10px 20px; border-radius: 8px; cursor: pointer; font-weight: bold; }
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
     </style>
 </head>
 <body>
 
 <div class="container">
-    <div class="header" style="text-align: center; margin-bottom: 20px;">
-        <h1>Tweak Compatibility</h1>
-        <p id="status">Checking system...</p>
-    </div>
-
-    <div id="262-warning" class="warning-banner">
-        ⚠️ <strong>iOS 26.2 Warning:</strong> Most exploits are patched on stable 26.2. Nugget v7 and Misaka26 currently only support up to 26.2 Beta 1.
-    </div>
-
-    <div class="legend">
-        <div class="legend-item"><div class="dot" style="background:var(--nugget)"></div> Nugget Exclusive</div>
-        <div class="legend-item"><div class="dot" style="background:var(--misaka)"></div> Misaka26 Exclusive</div>
-        <div class="legend-item"><div class="dot" style="background:var(--both)"></div> Available on Both</div>
-    </div>
-
     <div class="version-box">
-        <select id="v-select" onchange="updateUI()">
-            <option value="17.0">iOS 17.0 - 17.6</option>
-            <option value="18.0">iOS 18.0 - 18.0.1</option>
-            <option value="18.1">iOS 18.1 - 18.1.1 (AI Enabler)</option>
-            <option value="26.1">iOS 26.0 - 26.1</option>
-            <option value="26.2">iOS 26.2 (Stable/Patched)</option>
+        <h2 id="status">Detecting...</h2>
+        <p style="color: var(--secondary); font-size: 0.9em;">Click any tweak to see its description.</p>
+        <button onclick="detectVersion()">Refresh Detection</button>
+        <select id="v-manual" onchange="updateUI(this.value)" style="margin-top:10px; background:#000; color:#fff; border:1px solid #444; padding:5px; border-radius:5px;">
+            <option value="">Manual Override</option>
+            <option value="17.0">iOS 17.0</option>
+            <option value="18.1">iOS 18.1</option>
+            <option value="26.1">iOS 26.1</option>
+            <option value="26.2">iOS 26.2</option>
         </select>
     </div>
 
     <div id="features">
         <div class="feature-section" data-min="17.0" data-max="26.1">
-            <h2>Core Customization</h2>
+            <h3 style="color:var(--nugget)">Nugget & Misaka Core</h3>
             <div class="grid">
-                <div class="item both">Dynamic Island<span class="source-tag">BOTH</span></div>
-                <div class="item both">Stage Manager<span class="source-tag">BOTH</span></div>
-                <div class="item both">Boot Chime / Charge Limit<span class="source-tag">BOTH</span></div>
-                <div class="item both">Always-on Display (AoD)<span class="source-tag">BOTH</span></div>
+                <div class="item both" onclick="showInfo('Dynamic Island', 'Enables the interactive Dynamic Island on iPhones that don\'t have it natively (iPhone 14 and older).')">Dynamic Island</div>
+                <div class="item nugget" onclick="showInfo('PosterBoard', 'Adds custom, community-made animated wallpapers directly into your native iOS wallpaper library.')">PosterBoard Wallpapers</div>
+                <div class="item misaka" onclick="showInfo('TrollPad', 'A revolutionary tweak that tricks your iPhone into thinking it is an iPad, enabling Stage Manager, Split View, and a Grid App Switcher.')">TrollPad Multitasking</div>
             </div>
         </div>
 
-        <div class="feature-section" data-min="17.0" data-max="26.1">
-            <h2>Nugget Exclusives (v7)</h2>
+        <div class="feature-section" data-min="26.0" data-max="26.1">
+            <h3 style="color:var(--misaka)">iOS 26 High-Level Tweaks</h3>
             <div class="grid">
-                <div class="item nugget">PosterBoard (Animated Wallpapers)<span class="source-tag">NUGGET</span></div>
-                <div class="item nugget">Detailed Status Bar Editing<span class="source-tag">NUGGET</span></div>
-                <div class="item nugget">Disable Daemons (OTAd, HealthKit)<span class="source-tag">NUGGET</span></div>
-                <div class="item nugget">Build Version in Status Bar<span class="source-tag">NUGGET</span></div>
-            </div>
-        </div>
-
-        <div class="feature-section" data-min="18.0" data-max="26.1">
-            <h2>Misaka26 Exclusives</h2>
-            <div class="grid">
-                <div class="item misaka">TrollPad (MultiTasking)<span class="source-tag">MISAKA</span></div>
-                <div class="item misaka">Enable PWM (Flicker Control)<span class="source-tag">MISAKA</span></div>
-                <div class="item misaka">M-Chip AppStore Gaming<span class="source-tag">MISAKA</span></div>
-                <div class="item misaka">Security Research Device (SRD) Mode<span class="source-tag">MISAKA</span></div>
-                <div class="item misaka">Landscape FaceID (iOS 17+)<span class="source-tag">MISAKA</span></div>
-            </div>
-        </div>
-
-        <div class="feature-section" data-min="18.1" data-max="26.1">
-            <h2 style="color:var(--both)">Intelligence (18.1+)</h2>
-            <div class="grid">
-                <div class="item both">AI Enabler (Apple Intelligence)<span class="source-tag">BOTH</span></div>
-                <div class="item misaka">AI-Specific Device Spoofing<span class="source-tag">MISAKA</span></div>
+                <div class="item misaka" onclick="showInfo('Enable PWM', 'Pulse Width Modulation control. This can help reduce screen flicker to decrease eye strain for sensitive users.')">PWM Flicker Control</div>
+                <div class="item misaka" onclick="showInfo('SRD Mode', 'Security Research Device mode. Unlocks shell access and kernel customization tools usually reserved for Apple\'s official research program.')">SRD Mode</div>
+                <div class="item nugget" onclick="showInfo('Liquid Glass', 'Disables or modifies the new Liquid Glass UI check found in iOS 26 system files.')">Liquid Glass Logic</div>
             </div>
         </div>
     </div>
 </div>
 
-<script>
-function updateUI() {
-    let ver = parseFloat(document.getElementById('v-select').value);
-    document.getElementById('262-warning').style.display = (ver >= 26.2) ? "block" : "none";
-    document.getElementById('status').innerText = "Showing tweaks for iOS " + ver;
+<div id="infoModal" class="modal">
+    <div class="modal-content">
+        <span class="close" onclick="closeModal()">&times;</span>
+        <h2 id="modalTitle" style="color:var(--nugget)">Tweak Info</h2>
+        <p id="modalBody"></p>
+    </div>
+</div>
 
+<script>
+function detectVersion() {
+    const ua = window.navigator.userAgent;
+    let ver = 17.0; // Default fallback
+    if (/iPhone|iPad|iPod/.test(ua)) {
+        const match = ua.match(/OS (\d+)_(\d+)/);
+        if (match) ver = parseFloat(match[1] + "." + match[2]);
+    }
+    updateUI(ver);
+}
+
+function updateUI(ver) {
+    if (!ver) return;
+    document.getElementById('status').innerText = "System: iOS " + ver;
     document.querySelectorAll('.feature-section').forEach(s => {
-        let min = parseFloat(s.dataset.min);
-        let max = parseFloat(s.dataset.max);
-        s.classList.toggle('active', ver >= min && ver <= max);
+        const active = ver >= parseFloat(s.dataset.min) && ver <= parseFloat(s.dataset.max);
+        s.classList.toggle('active', active);
     });
 }
-window.onload = updateUI;
+
+function showInfo(title, desc) {
+    document.getElementById('modalTitle').innerText = title;
+    document.getElementById('modalBody').innerText = desc;
+    document.getElementById('infoModal').style.display = "block";
+}
+
+function closeModal() { document.getElementById('infoModal').style.display = "none"; }
+window.onclick = function(event) { if (event.target == document.getElementById('infoModal')) closeModal(); }
+
+window.onload = detectVersion;
 </script>
 </body>
 </html>
